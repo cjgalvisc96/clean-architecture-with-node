@@ -1,5 +1,5 @@
-const inMemory = require("./inMemory")
+const inMemory = require("./inMemory");
 
 module.exports = {
-    inMemory
-}
+  inMemory,
+};

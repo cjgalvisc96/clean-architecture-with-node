@@ -1,5 +1,5 @@
 module.exports = {
-    users: [],
-    products: [],
-    orders: []
-}
+  users: [],
+  products: [],
+  orders: [],
+};
