@@ -21,9 +21,10 @@
             "runtimeArgs": [
                 "--inspect-brk",
                 "${workspaceRoot}/node_modules/.bin/jest",
-                "${workspaceRoot}/tests/unit/useCases/users.test.js", // Run especific test
-                "-t",
-                "User use cases Add user use case User should be added",
+                "${workspaceRoot}/tests/unit/useCases/users.test.js",
+                // "${workspaceRoot}/tests/unit/useCases/users.test.js", // Run especific test
+                // "-t",
+                // "User use cases Add user use case User should be added",
                 "--runInBand"
             ],
             "console": "integratedTerminal",
