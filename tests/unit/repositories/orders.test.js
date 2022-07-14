@@ -14,7 +14,7 @@ const { Order } = require("../../../src/entities");
 
 describe("Orders repository", () => {
   test("New Order should be added and returned", async () => {
-    // Add a new Order
+    // Add a new order
     const testOrder = new Order({
       userId: uuidv4(),
       productsIds: [uuidv4(), uuidv4()],
