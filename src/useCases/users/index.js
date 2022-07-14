@@ -1,9 +1,11 @@
 const addUserUseCase = require("./addUser.useCase");
 const getUserByIdUseCase = require("./getUserById.useCase");
-const updateUserUserCase = require("./updateUser.useCase");
+const updateUserUseCase = require("./updateUser.useCase");
+const deleteUserUseCase = require("./deleteUser.usease");
 
 module.exports = {
   addUserUseCase,
   getUserByIdUseCase,
-  updateUserUserCase,
+  updateUserUseCase,
+  deleteUserUseCase,
 };

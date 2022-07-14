@@ -13,6 +13,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const Chance = require("chance");
 const updateUserUseCase = require("../../../src/useCases/users/updateUser.useCase");
+const { deleteUserUseCase } = require("../../../src/useCases/users");
 
 const chance = new Chance();
 
@@ -30,6 +31,7 @@ describe("User use cases", () => {
       meta: {},
     })),
     update: jest.fn(async (user) => user),
+    delete: jest.fn(async (user) => user),
   };
 
   const dependencies = {
@@ -118,6 +120,33 @@ describe("User use cases", () => {
 
       // Check the call
       const expectedUser = mockUserRepo.update.mock.calls[0][0];
+      expect(expectedUser).toEqual(testUserData);
+    });
+  });
+
+  describe("Delete user use case", () => {
+    test("User should be deleted", async () => {
+      // Create a user data
+      const testUserData = {
+        name: chance.name(),
+        lastName: chance.last(),
+        gender: genders.MALE,
+        meta: {
+          hair: {
+            color: "Red",
+          },
+        },
+      };
+      // Call update a user
+      const deletedUser = await deleteUserUseCase(dependencies).execute({
+        user: testUserData,
+      });
+
+      // Check the result
+      expect(deletedUser).toEqual(testUserData);
+
+      // Check the call
+      const expectedUser = mockUserRepo.delete.mock.calls[0][0];
       expect(expectedUser).toEqual(testUserData);
     });
   });
