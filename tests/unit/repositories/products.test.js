@@ -13,7 +13,7 @@ const { Product } = require("../../../src/entities");
 describe("products repository", () => {
   test("New product should be added and returned", async () => {
     // Create a new Product
-    const testproduct = new Product({
+    const testProduct = new Product({
       name: chance.name(),
       description: chance.sentence(),
       images: [chance.url(), chance.url()],
@@ -26,25 +26,25 @@ describe("products repository", () => {
       },
     });
 
-    const addedproduct = await productsRepository.add(testproduct);
+    const addedProduct = await productsRepository.add(testProduct);
 
-    expect(addedproduct).toBeDefined();
-    expect(addedproduct.id).toBeDefined();
-    expect(addedproduct.name).toBeDefined();
-    expect(addedproduct.description).toBeDefined();
-    expect(addedproduct.images).toBeDefined();
-    expect(addedproduct.price).toBeDefined();
-    expect(addedproduct.color).toBeDefined();
-    expect(addedproduct.meta).toBeDefined();
+    expect(addedProduct).toBeDefined();
+    expect(addedProduct.id).toBeDefined();
+    expect(addedProduct.name).toBeDefined();
+    expect(addedProduct.description).toBeDefined();
+    expect(addedProduct.images).toBeDefined();
+    expect(addedProduct.price).toBeDefined();
+    expect(addedProduct.color).toBeDefined();
+    expect(addedProduct.meta).toBeDefined();
 
     // Get the product
-    const returnedproduct = await productsRepository.getById(addedproduct.id);
-    expect(returnedproduct).toEqual(addedproduct);
+    const returnedProduct = await productsRepository.getById(addedProduct.id);
+    expect(returnedProduct).toEqual(addedProduct);
   });
 
   test("New product should be deleted", async () => {
     // Init two products
-    const willBeDeletedproduct = new Product({
+    const willBeDeletedProduct = new Product({
       name: chance.name(),
       description: chance.sentence(),
       images: [chance.url(), chance.url()],
@@ -56,7 +56,7 @@ describe("products repository", () => {
         },
       },
     });
-    const shouldStayproduct = new Product({
+    const shouldStayProduct = new Product({
       name: chance.name(),
       description: chance.sentence(),
       images: [chance.url(), chance.url()],
@@ -70,36 +70,36 @@ describe("products repository", () => {
     });
 
     // Add two products
-    const [willBeDeletedAddedproduct, shouldStayAddedproduct] =
+    const [willBeDeletedaddedProduct, shouldStayaddedProduct] =
       await Promise.all([
-        productsRepository.add(willBeDeletedproduct),
-        productsRepository.add(shouldStayproduct),
+        productsRepository.add(willBeDeletedProduct),
+        productsRepository.add(shouldStayProduct),
       ]);
-    expect(willBeDeletedAddedproduct).toBeDefined();
-    expect(shouldStayAddedproduct).toBeDefined();
+    expect(willBeDeletedaddedProduct).toBeDefined();
+    expect(shouldStayaddedProduct).toBeDefined();
 
     // Delete one product()
-    const deletedproduct = await productsRepository.delete(
-      willBeDeletedAddedproduct
+    const deletedProduct = await productsRepository.delete(
+      willBeDeletedaddedProduct
     );
-    expect(deletedproduct).toEqual(willBeDeletedAddedproduct);
+    expect(deletedProduct).toEqual(willBeDeletedaddedProduct);
 
     // Try to get deleted product(should be undefined)
-    const shouldBeUndefinedproduct = await productsRepository.getById(
-      deletedproduct.id
+    const shouldBeUndefinedProduct = await productsRepository.getById(
+      deletedProduct.id
     );
-    expect(shouldBeUndefinedproduct).toBeUndefined();
+    expect(shouldBeUndefinedProduct).toBeUndefined();
 
     // Check that the second product defined(not deleted)
-    const shouldBeDefinedproduct = await productsRepository.getById(
-      shouldStayAddedproduct.id
+    const shouldBeDefinedProduct = await productsRepository.getById(
+      shouldStayaddedProduct.id
     );
-    expect(shouldBeDefinedproduct).toBeDefined();
+    expect(shouldBeDefinedProduct).toBeDefined();
   });
 
   test("New product should be updated", async () => {
     // Added a product
-    const testproduct = new Product({
+    const testProduct = new Product({
       name: chance.name(),
       description: chance.sentence(),
       images: [chance.url(), chance.url()],
@@ -112,12 +112,12 @@ describe("products repository", () => {
       },
     });
 
-    const addedproduct = await productsRepository.add(testproduct);
-    expect(addedproduct).toBeDefined();
+    const addedProduct = await productsRepository.add(testProduct);
+    expect(addedProduct).toBeDefined();
 
     // Update a product
-    const clonedproduct = cloneDeep({
-      ...addedproduct,
+    const clonedProduct = cloneDeep({
+      ...addedProduct,
       name: chance.name(),
       meta: {
         deliver: {
@@ -125,7 +125,7 @@ describe("products repository", () => {
         },
       },
     });
-    const updatedproduct = await productsRepository.update(clonedproduct);
-    expect(updatedproduct).toEqual(clonedproduct);
+    const updatedProduct = await productsRepository.update(clonedProduct);
+    expect(updatedProduct).toEqual(clonedProduct);
   });
 });
