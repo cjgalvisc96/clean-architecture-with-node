@@ -52,18 +52,6 @@ describe("User use cases", () => {
 
   describe("Add user use case", () => {
     test("User should be added", async () => {
-      // create a user data
-      const testUserData = {
-        name: chance.name(),
-        lastName: chance.last(),
-        gender: genders.MALE,
-        meta: {
-          hair: {
-            color: "Red",
-          },
-        },
-      };
-
       // add a user using the use case
       const addedUser = await addUserUseCase(dependencies).execute(
         testUserData

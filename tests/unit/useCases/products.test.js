@@ -1,5 +1,10 @@
 const {
-  product: { addProductUseCase, getProductByIdUseCase, updateProductUseCase },
+  product: {
+    addProductUseCase,
+    getProductByIdUseCase,
+    updateProductUseCase,
+    deleteProductUseCase,
+  },
 } = require("../../../src/useCases");
 
 const { v4: uuidv4 } = require("uuid");
@@ -116,6 +121,27 @@ describe("Product use cases", () => {
 
       // Check the call
       const expectedProduct = mockProductRepo.update.mock.calls[0][0];
+      expect(expectedProduct).toEqual(mockProduct);
+    });
+  });
+
+  describe("Delete product use case", () => {
+    test("Product should be deleted", async () => {
+      // Create a product data
+      const mockProduct = {
+        ...testProductData,
+        id: uuidv4(),
+      };
+      // Call update a product
+      const deletedProduct = await deleteProductUseCase(dependencies).execute({
+        product: cloneDeep(mockProduct),
+      });
+
+      // Check the result
+      expect(deletedProduct).toEqual(mockProduct);
+
+      // Check the call
+      const expectedProduct = mockProductRepo.delete.mock.calls[0][0];
       expect(expectedProduct).toEqual(mockProduct);
     });
   });

@@ -21,7 +21,7 @@
             "runtimeArgs": [
                 "--inspect-brk",
                 "${workspaceRoot}/node_modules/.bin/jest",
-                // "${workspaceRoot}/tests/unit/useCases/products.test.js",
+                // "${workspaceRoot}/tests/unit/useCases/orders.test.js",
                 "${workspaceRoot}/tests/unit/useCases",
                 // "-t",
                 // "User use cases Add user use case User should be added",
