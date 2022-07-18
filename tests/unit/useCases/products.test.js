@@ -1,14 +1,27 @@
 const {
-  product: { addProductUseCase, getProductByIdUseCase },
+  product: { addProductUseCase, getProductByIdUseCase, updateProductUseCase },
 } = require("../../../src/useCases");
 
 const { v4: uuidv4 } = require("uuid");
 
+const { cloneDeep } = require("lodash");
+
 const Chance = require("chance");
+const { Product } = require("../../../src/entities");
 
 const chance = new Chance();
 
 describe("Product use cases", () => {
+  const testProductData = new Product({
+    name: chance.name(),
+    description: chance.sentence(),
+    images: [chance.url()],
+    price: chance.natural(),
+    color: chance.color(),
+    meta: {
+      comment: chance.sentence(),
+    },
+  });
   const mockProductRepo = {
     add: jest.fn(async (product) => ({
       ...product,
@@ -34,19 +47,7 @@ describe("Product use cases", () => {
   };
 
   describe("Add product use case", () => {
-    xtest("New Product should be added", async () => {
-      // create a product data
-      const testProductData = {
-        name: chance.name(),
-        description: chance.sentence(),
-        images: [chance.url()],
-        price: chance.natural(),
-        color: chance.color(),
-        meta: {
-          comment: chance.sentence(),
-        },
-      };
-
+    test("New Product should be added", async () => {
       // add a product using the use case
       const addedProduct = await addProductUseCase(dependencies).execute(
         testProductData
@@ -95,6 +96,27 @@ describe("Product use cases", () => {
       // Check the mock
       const expectedId = mockProductRepo.getById.mock.calls[0][0];
       expect(expectedId).toBe(fakeId);
+    });
+  });
+
+  describe("Update product use case", () => {
+    test("Product should be updated", async () => {
+      // Create a product data
+      const mockProduct = {
+        ...testProductData,
+        id: uuidv4(),
+      };
+      // Call update a product
+      const updatedProduct = await updateProductUseCase(dependencies).execute({
+        product: cloneDeep(mockProduct),
+      });
+
+      // Check the result
+      expect(updatedProduct).toEqual(mockProduct);
+
+      // Check the call
+      const expectedProduct = mockProductRepo.update.mock.calls[0][0];
+      expect(expectedProduct).toEqual(mockProduct);
     });
   });
 });

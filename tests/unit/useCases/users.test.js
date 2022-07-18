@@ -11,6 +11,8 @@ const {
 
 const { v4: uuidv4 } = require("uuid");
 
+const { cloneDeep } = require("lodash");
+
 const Chance = require("chance");
 const updateUserUseCase = require("../../../src/useCases/users/updateUser.useCase");
 const { deleteUserUseCase } = require("../../../src/useCases/users");
@@ -18,6 +20,16 @@ const { deleteUserUseCase } = require("../../../src/useCases/users");
 const chance = new Chance();
 
 describe("User use cases", () => {
+  const testUserData = new User({
+    name: chance.name(),
+    lastName: chance.last(),
+    gender: genders.MALE,
+    meta: {
+      hair: {
+        color: "Red",
+      },
+    },
+  });
   const mockUserRepo = {
     add: jest.fn(async (user) => ({
       ...user,
@@ -99,17 +111,6 @@ describe("User use cases", () => {
 
   describe("Update user use case", () => {
     test("User should be updated", async () => {
-      // Create a user data
-      const testUserData = {
-        name: chance.name(),
-        lastName: chance.last(),
-        gender: genders.MALE,
-        meta: {
-          hair: {
-            color: "Red",
-          },
-        },
-      };
       // Call update a user
       const updatedUser = await updateUserUseCase(dependencies).execute({
         user: testUserData,
@@ -127,27 +128,21 @@ describe("User use cases", () => {
   describe("Delete user use case", () => {
     test("User should be deleted", async () => {
       // Create a user data
-      const testUserData = {
-        name: chance.name(),
-        lastName: chance.last(),
-        gender: genders.MALE,
-        meta: {
-          hair: {
-            color: "Red",
-          },
-        },
+      const mockUser = {
+        ...testUserData,
+        id: uuidv4(),
       };
       // Call update a user
       const deletedUser = await deleteUserUseCase(dependencies).execute({
-        user: testUserData,
+        user: cloneDeep(mockUser),
       });
 
       // Check the result
-      expect(deletedUser).toEqual(testUserData);
+      expect(deletedUser).toEqual(mockUser);
 
       // Check the call
       const expectedUser = mockUserRepo.delete.mock.calls[0][0];
-      expect(expectedUser).toEqual(testUserData);
+      expect(expectedUser).toEqual(mockUser);
     });
   });
 });
