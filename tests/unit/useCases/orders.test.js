@@ -15,7 +15,7 @@ const { deleteOrderUseCase } = require("../../../src/useCases/orders");
 const chance = new Chance();
 
 describe("Order use cases", () => {
-  const testOrderData = new Order({
+  const testOrder = new Order({
     userId: uuidv4(),
     productsIds: [uuidv4(), uuidv4()],
     date: new Date(),
@@ -50,27 +50,25 @@ describe("Order use cases", () => {
   describe("Add order use case", () => {
     test("Order should be added", async () => {
       // add a order using the use case
-      const addedOrder = await addOrderUseCase(dependencies).execute(
-        testOrderData
-      );
+      const addedOrder = await addOrderUseCase(dependencies).execute(testOrder);
 
       // check the received data
       expect(addedOrder).toBeDefined();
       expect(addedOrder.id).toBeDefined();
-      expect(addedOrder.userId).toBe(testOrderData.userId);
-      expect(addedOrder.productsIds).toEqual(testOrderData.productsIds);
-      expect(addedOrder.date).toEqual(testOrderData.date);
-      expect(addedOrder.isPayed).toBe(testOrderData.isPayed);
-      expect(addedOrder.meta).toEqual(testOrderData.meta);
+      expect(addedOrder.userId).toBe(testOrder.userId);
+      expect(addedOrder.productsIds).toEqual(testOrder.productsIds);
+      expect(addedOrder.date).toEqual(testOrder.date);
+      expect(addedOrder.isPayed).toBe(testOrder.isPayed);
+      expect(addedOrder.meta).toEqual(testOrder.meta);
 
       // check that the dependencies called as expected
       const call = mockOrderRepo.add.mock.calls[0][0];
       expect(call.id).toBeUndefined();
-      expect(call.userId).toBe(testOrderData.userId);
-      expect(call.productsIds).toEqual(testOrderData.productsIds);
-      expect(call.date).toEqual(testOrderData.date);
-      expect(call.isPayed).toEqual(testOrderData.isPayed);
-      expect(call.meta).toEqual(testOrderData.meta);
+      expect(call.userId).toBe(testOrder.userId);
+      expect(call.productsIds).toEqual(testOrder.productsIds);
+      expect(call.date).toEqual(testOrder.date);
+      expect(call.isPayed).toEqual(testOrder.isPayed);
+      expect(call.meta).toEqual(testOrder.meta);
     });
   });
 
@@ -101,15 +99,15 @@ describe("Order use cases", () => {
     test("Order should be updated", async () => {
       // Call update a order
       const updatedOrder = await updateOrderUseCase(dependencies).execute({
-        order: testOrderData,
+        order: testOrder,
       });
 
       // Check the result
-      expect(updatedOrder).toEqual(testOrderData);
+      expect(updatedOrder).toEqual(testOrder);
 
       // Check the call
       const expectedOrder = mockOrderRepo.update.mock.calls[0][0];
-      expect(expectedOrder).toEqual(testOrderData);
+      expect(expectedOrder).toEqual(testOrder);
     });
   });
 
@@ -117,7 +115,7 @@ describe("Order use cases", () => {
     test("Order should be deleted", async () => {
       // Create a order data
       const mockOrder = {
-        ...testOrderData,
+        ...testOrder,
         id: uuidv4(),
       };
       // Call update a order

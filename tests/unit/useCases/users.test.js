@@ -20,7 +20,7 @@ const { deleteUserUseCase } = require("../../../src/useCases/users");
 const chance = new Chance();
 
 describe("User use cases", () => {
-  const testUserData = new User({
+  const testUser = new User({
     name: chance.name(),
     lastName: chance.last(),
     gender: genders.MALE,
@@ -53,25 +53,23 @@ describe("User use cases", () => {
   describe("Add user use case", () => {
     test("User should be added", async () => {
       // add a user using the use case
-      const addedUser = await addUserUseCase(dependencies).execute(
-        testUserData
-      );
+      const addedUser = await addUserUseCase(dependencies).execute(testUser);
 
       // check the received data
       expect(addedUser).toBeDefined();
       expect(addedUser.id).toBeDefined();
-      expect(addedUser.name).toBe(testUserData.name);
-      expect(addedUser.lastName).toBe(testUserData.lastName);
-      expect(addedUser.gender).toBe(testUserData.gender);
-      expect(addedUser.meta).toEqual(testUserData.meta);
+      expect(addedUser.name).toBe(testUser.name);
+      expect(addedUser.lastName).toBe(testUser.lastName);
+      expect(addedUser.gender).toBe(testUser.gender);
+      expect(addedUser.meta).toEqual(testUser.meta);
 
       // check that the dependencies called as expected
       const call = mockUserRepo.add.mock.calls[0][0];
       expect(call.id).toBeUndefined();
-      expect(call.name).toBe(testUserData.name);
-      expect(call.lastName).toBe(testUserData.lastName);
-      expect(call.gender).toBe(testUserData.gender);
-      expect(call.meta).toEqual(testUserData.meta);
+      expect(call.name).toBe(testUser.name);
+      expect(call.lastName).toBe(testUser.lastName);
+      expect(call.gender).toBe(testUser.gender);
+      expect(call.meta).toEqual(testUser.meta);
     });
   });
 
@@ -101,15 +99,15 @@ describe("User use cases", () => {
     test("User should be updated", async () => {
       // Call update a user
       const updatedUser = await updateUserUseCase(dependencies).execute({
-        user: testUserData,
+        user: testUser,
       });
 
       // Check the result
-      expect(updatedUser).toEqual(testUserData);
+      expect(updatedUser).toEqual(testUser);
 
       // Check the call
       const expectedUser = mockUserRepo.update.mock.calls[0][0];
-      expect(expectedUser).toEqual(testUserData);
+      expect(expectedUser).toEqual(testUser);
     });
   });
 
@@ -117,7 +115,7 @@ describe("User use cases", () => {
     test("User should be deleted", async () => {
       // Create a user data
       const mockUser = {
-        ...testUserData,
+        ...testUser,
         id: uuidv4(),
       };
       // Call update a user

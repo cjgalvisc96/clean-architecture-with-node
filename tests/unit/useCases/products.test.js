@@ -17,7 +17,7 @@ const { Product } = require("../../../src/entities");
 const chance = new Chance();
 
 describe("Product use cases", () => {
-  const testProductData = new Product({
+  const testProduct = new Product({
     name: chance.name(),
     description: chance.sentence(),
     images: [chance.url()],
@@ -55,28 +55,28 @@ describe("Product use cases", () => {
     test("New Product should be added", async () => {
       // add a product using the use case
       const addedProduct = await addProductUseCase(dependencies).execute(
-        testProductData
+        testProduct
       );
 
       // check the received data
       expect(addedProduct).toBeDefined();
       expect(addedProduct.id).toBeDefined();
-      expect(addedProduct.name).toBe(testProductData.name);
-      expect(addedProduct.description).toBe(testProductData.description);
-      expect(addedProduct.images).toEqual(testProductData.images);
-      expect(addedProduct.price).toBe(testProductData.price);
-      expect(addedProduct.color).toBe(testProductData.color);
-      expect(addedProduct.meta).toEqual(testProductData.meta);
+      expect(addedProduct.name).toBe(testProduct.name);
+      expect(addedProduct.description).toBe(testProduct.description);
+      expect(addedProduct.images).toEqual(testProduct.images);
+      expect(addedProduct.price).toBe(testProduct.price);
+      expect(addedProduct.color).toBe(testProduct.color);
+      expect(addedProduct.meta).toEqual(testProduct.meta);
 
       // check that the dependencies called as expected
       const call = mockProductRepo.add.mock.calls[0][0];
       expect(call.id).toBeUndefined();
-      expect(call.name).toBe(testProductData.name);
-      expect(call.description).toBe(testProductData.description);
-      expect(call.images).toEqual(testProductData.images);
-      expect(call.price).toBe(testProductData.price);
-      expect(call.color).toBe(testProductData.color);
-      expect(call.meta).toEqual(testProductData.meta);
+      expect(call.name).toBe(testProduct.name);
+      expect(call.description).toBe(testProduct.description);
+      expect(call.images).toEqual(testProduct.images);
+      expect(call.price).toBe(testProduct.price);
+      expect(call.color).toBe(testProduct.color);
+      expect(call.meta).toEqual(testProduct.meta);
     });
   });
 
@@ -108,7 +108,7 @@ describe("Product use cases", () => {
     test("Product should be updated", async () => {
       // Create a product data
       const mockProduct = {
-        ...testProductData,
+        ...testProduct,
         id: uuidv4(),
       };
       // Call update a product
@@ -129,7 +129,7 @@ describe("Product use cases", () => {
     test("Product should be deleted", async () => {
       // Create a product data
       const mockProduct = {
-        ...testProductData,
+        ...testProduct,
         id: uuidv4(),
       };
       // Call update a product
