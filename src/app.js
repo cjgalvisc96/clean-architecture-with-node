@@ -5,6 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_PREFIX = process.env.API_PREFIX || "/api/v1";
 const dependencies = require("./config/dependencies");
+const ErrorHandler = require("./frameworks/expressSpecific/ErrorHandler");
 
 module.exports = {
   start: () => {
@@ -20,6 +21,8 @@ module.exports = {
     app.use(API_PREFIX, routes(dependencies));
 
     // Common Error handler
+    app.use(ErrorHandler);
+
     app.listen(PORT, () => {
       console.log(`WOHOOO our server is running under port ${PORT}`);
     });
