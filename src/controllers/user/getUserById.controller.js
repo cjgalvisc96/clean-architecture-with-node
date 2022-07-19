@@ -12,7 +12,7 @@ module.exports = (dependencies) => {
       const { id } = params;
 
       const getUserById = getUserByIdUseCase(dependencies);
-      const response = getUserById.execute({
+      const response = await getUserById.execute({
         id,
       });
 

@@ -7,6 +7,7 @@ module.exports = (err, req, res, next) => {
     reason: err.reason || err.stack || "Somebody failed",
     url: req.originalUrl,
     ip: req.ip,
+    validationErrors: err.validationErrors || [],
   });
 
   res.status(error.status);
