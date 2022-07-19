@@ -1,6 +1,6 @@
 const { isEmpty } = require("lodash");
 const { Order } = require("../../entities");
-const { ResponseError, validationError } = require("../../frameworks/common");
+const { ResponseError, ValidationError } = require("../../frameworks/common");
 
 module.exports = (dependencies) => {
   const {
@@ -43,7 +43,7 @@ module.exports = (dependencies) => {
 
     if (!isEmpty(notFoundProductsIds)) {
       returnable.push(
-        new validationError({
+        new ValidationError({
           field: "productsIds",
           msg: `No products with ids ${notFoundProductsIds.join(", ")}`,
         })
@@ -53,7 +53,7 @@ module.exports = (dependencies) => {
     const user = await getUserById({ id: userId });
     if (!user) {
       returnable.push(
-        new validationError({
+        new ValidationError({
           field: "userId",
           msg: `No user with id ${userId}`,
         })

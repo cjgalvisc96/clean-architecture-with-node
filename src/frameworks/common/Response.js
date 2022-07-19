@@ -17,7 +17,7 @@ module.exports.ResponseError = class ResponseError {
   }
 };
 
-module.exports.validationError = class ValidationError {
+module.exports.ValidationError = class ValidationError {
   constructor({ field, msg }) {
     this.field = field;
     this.msg = msg;
