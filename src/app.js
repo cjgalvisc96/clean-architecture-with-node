@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 const API_PREFIX = process.env.API_PREFIX || "/api/v1";
 const dependencies = require("./config/dependencies");
 const ErrorHandler = require("./frameworks/expressSpecific/ErrorHandler");
+const { connect: connectToMongo } = require("./frameworks/database/mongo");
 
 module.exports = {
   start: () => {
@@ -25,6 +26,7 @@ module.exports = {
 
     app.listen(PORT, () => {
       console.log(`WOHOOO our server is running under port ${PORT}`);
+      connectToMongo();
     });
   },
 };
