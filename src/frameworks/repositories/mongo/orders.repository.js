@@ -1,32 +1,51 @@
-const { inMemory: inMemoryDb } = require("../../database");
+const mongoose = require("mongoose");
+const entityName = "Order";
+const {
+  schemas: { order: orderSchema },
+} = require("../../database/mongo");
 
-const { v4: uuidv4 } = require("uuid");
+const repository = () => {
+  // Schema
+  const Order = mongoose.model(entityName, orderSchema);
 
-module.exports = {
-  add: async (order) => {
-    if (!order.id) {
-      order.id = uuidv4();
-    }
-    inMemoryDb.orders.push(order);
-    return order;
-  },
-  update: async (order) => {
-    const index = inMemoryDb.orders.findIndex((item) => item.id === order.id);
-    if (index >= 0) {
-      inMemoryDb.orders[index] = order;
-      return inMemoryDb.orders[index];
-    }
-    return null;
-  },
-  delete: async (order) => {
-    const index = inMemoryDb.orders.findIndex((item) => item.id === order.id);
-    if (index >= 0) {
-      inMemoryDb.orders.splice(index, 1);
-      return order;
-    }
-    return null;
-  },
-  getById: async (id) => {
-    return inMemoryDb.orders.find((item) => item.id === id);
-  },
+  // CRUD
+  return {
+    add: async (order) => {
+      const mongoObject = new Order(order);
+      return mongoObject.save();
+    },
+    update: async (order) => {
+      const { id } = order;
+      delete order.id;
+      return Order.findByIdAndUpdate(
+        id,
+        {
+          ...order,
+          updateAt: new Date(),
+        },
+        {
+          new: true,
+        }
+      ).lean();
+    },
+    delete: async (order) => {
+      const { id } = order;
+      delete order.id;
+      return Order.findByIdAndUpdate(
+        id,
+        {
+          ...order,
+          deleteAt: new Date(),
+        },
+        {
+          new: true,
+        }
+      ).lean();
+    },
+    getById: async (id) => {
+      return Order.findOne({ _id: id, deleteAt: { $exists: false } });
+    },
+  };
 };
+
+module.exports = repository();

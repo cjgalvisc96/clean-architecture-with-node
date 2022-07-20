@@ -1,36 +1,51 @@
-const { inMemory: inMemoryDb } = require("../../database");
+const mongoose = require("mongoose");
+const entityName = "Product";
+const {
+  schemas: { product: productSchema },
+} = require("../../database/mongo");
 
-const { v4: uuidv4 } = require("uuid");
+const repository = () => {
+  // Schema
+  const Product = mongoose.model(entityName, productSchema);
 
-module.exports = {
-  add: async (product) => {
-    if (!product.id) {
-      product.id = uuidv4();
-    }
-    inMemoryDb.products.push(product);
-    return product;
-  },
-  update: async (product) => {
-    const index = inMemoryDb.products.findIndex(
-      (item) => item.id === product.id
-    );
-    if (index >= 0) {
-      inMemoryDb.products[index] = product;
-      return inMemoryDb.products[index];
-    }
-    return null;
-  },
-  delete: async (product) => {
-    const index = inMemoryDb.products.findIndex(
-      (item) => item.id === product.id
-    );
-    if (index >= 0) {
-      inMemoryDb.products.splice(index, 1);
-      return product;
-    }
-    return null;
-  },
-  getById: async (id) => {
-    return inMemoryDb.products.find((item) => item.id === id);
-  },
+  // CRUD
+  return {
+    add: async (product) => {
+      const mongoObject = new Product(product);
+      return mongoObject.save();
+    },
+    update: async (product) => {
+      const { id } = product;
+      delete product.id;
+      return Product.findByIdAndUpdate(
+        id,
+        {
+          ...product,
+          updateAt: new Date(),
+        },
+        {
+          new: true,
+        }
+      ).lean();
+    },
+    delete: async (product) => {
+      const { id } = product;
+      delete product.id;
+      return Product.findByIdAndUpdate(
+        id,
+        {
+          ...product,
+          deleteAt: new Date(),
+        },
+        {
+          new: true,
+        }
+      ).lean();
+    },
+    getById: async (id) => {
+      return Product.findOne({ _id: id, deleteAt: { $exists: false } });
+    },
+  };
 };
+
+module.exports = repository();

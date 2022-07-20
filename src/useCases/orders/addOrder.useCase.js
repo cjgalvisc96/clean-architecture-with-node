@@ -1,66 +1,18 @@
 const { isEmpty } = require("lodash");
 const { Order } = require("../../entities");
-const { ResponseError, ValidationError } = require("../../frameworks/common");
+
+const { ResponseError } = require("../../frameworks/common");
+
+const validator = require("./validator");
 
 module.exports = (dependencies) => {
-  const {
-    ordersRepository,
-    useCases: {
-      user: { getUserByIdUseCase },
-      product: { getProductByIdUseCase },
-    },
-  } = dependencies;
+  const { ordersRepository } = dependencies;
 
   if (!ordersRepository) {
-    throw new Error("The orders repository should be exist in dependencies");
+    throw new Error("ordersRepository should be exist in dependencies");
   }
 
-  if (!getUserByIdUseCase) {
-    throw new Error("getUserByIdUseCase should be exist in dependencies");
-  }
-
-  if (!getProductByIdUseCase) {
-    throw new Error("getProductByIdUseCase should be exist in dependencies");
-  }
-
-  const getUserById = getUserByIdUseCase(dependencies).execute;
-  const getProductById = getProductByIdUseCase(dependencies).execute;
-
-  const getValidationErrors = async ({ order }) => {
-    const returnable = [];
-
-    const { productsIds = [], userId } = order;
-    const products = await Promise.all(
-      productsIds.map((id) => getProductById({ id }))
-    );
-
-    const notFoundProductsIds = products.reduce((acc, product, i) => {
-      if (!product) {
-        acc.push(productsIds[i]);
-      }
-      return acc;
-    }, []);
-
-    if (!isEmpty(notFoundProductsIds)) {
-      returnable.push(
-        new ValidationError({
-          field: "productsIds",
-          msg: `No products with ids ${notFoundProductsIds.join(", ")}`,
-        })
-      );
-    }
-
-    const user = await getUserById({ id: userId });
-    if (!user) {
-      returnable.push(
-        new ValidationError({
-          field: "userId",
-          msg: `No user with id ${userId}`,
-        })
-      );
-    }
-    return returnable;
-  };
+  const getValidationErrors = validator(dependencies);
 
   const execute = async ({ userId, productsIds, date, isPayed, meta }) => {
     const order = new Order({
@@ -74,6 +26,7 @@ module.exports = (dependencies) => {
     const validationErrors = await getValidationErrors({
       order,
     });
+
     if (!isEmpty(validationErrors)) {
       return Promise.reject(
         new ResponseError({
